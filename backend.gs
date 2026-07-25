@@ -180,3 +180,23 @@ function respond(success, message, data = {}) {
     .createTextOutput(JSON.stringify(response))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+// ============================================
+// TEST - Forcer les permissions Drive
+// ============================================
+
+function testPermissions() {
+  try {
+    // Essayer d'accéder à Drive
+    const folder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
+    const name = folder.getName();
+    
+    Logger.log("✅ Permissions Drive OK");
+    Logger.log("Dossier parent: " + name);
+    
+    return "Permissions Drive confirmées ✅";
+  } catch (error) {
+    Logger.log("❌ Erreur permissions: " + error);
+    return "Erreur: " + error.toString();
+  }
+}
