@@ -30,7 +30,7 @@ function doGet(e) {
   } catch (e) {
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      error: e.toString()
+      message: e.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
@@ -80,12 +80,12 @@ function doPost(e) {
     
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      error: "Action inconnue"
+      message: "Action inconnue"
     })).setMimeType(ContentService.MimeType.JSON);
   } catch (e) {
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      error: e.toString()
+      message: e.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
