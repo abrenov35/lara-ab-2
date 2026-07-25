@@ -106,29 +106,57 @@ function handleUpload(payload) {
 
 function createFileInDrive(category, fileName, fileDataBase64) {
   try {
-    const fileBlob = Utilities.newBlob(
-      Utilities.base64Decode(fileDataBase64),
-      getMimeType(fileName),
-      fileName
-    );
+    Logger.log("🔷 Début createFileInDrive");
+    Logger.log("  Category: " + category);
+    Logger.log("  FileName: " + fileName);
+    Logger.log("  FileData size: " + (fileDataBase64 ? fileDataBase64.length : 0));
     
+    // Décoder le fichier
+    Logger.log("🔷 Décodage base64...");
+    const decodedData = Utilities.base64Decode(fileDataBase64);
+    Logger.log("  Decoded size: " + decodedData.length);
+    
+    // Créer le blob
+    Logger.log("🔷 Création du blob...");
+    const mimeType = getMimeType(fileName);
+    Logger.log("  MIME type: " + mimeType);
+    const fileBlob = Utilities.newBlob(decodedData, mimeType, fileName);
+    Logger.log("  Blob créé ✓");
+    
+    // Accéder au dossier parent
+    Logger.log("🔷 Accès au dossier parent...");
+    Logger.log("  FOLDER_ID: " + CONFIG.DRIVE_FOLDER_ID);
     const parentFolder = DriveApp.getFolderById(CONFIG.DRIVE_FOLDER_ID);
-    const folderName = getCategoryFolderName(category);
+    Logger.log("  Dossier parent: " + parentFolder.getName());
     
-    // Trouver ou créer le dossier de catégorie
+    // Trouver/créer le dossier de catégorie
+    Logger.log("🔷 Recherche dossier catégorie...");
+    const folderName = getCategoryFolderName(category);
+    Logger.log("  Cherchant: " + folderName);
+    
     const folders = parentFolder.getFoldersByName(folderName);
     const folder = folders.hasNext() ? folders.next() : parentFolder.createFolder(folderName);
+    Logger.log("  Dossier trouvé/créé: " + folder.getName());
     
     // Créer le fichier
+    Logger.log("🔷 Création du fichier...");
     const file = folder.createFile(fileBlob);
-    file.setSharing(DriveApp.Access.READER, DriveApp.Permission.ANYONE);
+    Logger.log("  Fichier créé: " + file.getName());
     
+    // Partager publiquement
+    Logger.log("🔷 Partage publique...");
+    file.setSharing(DriveApp.Access.READER, DriveApp.Permission.ANYONE);
+    Logger.log("  Partage ✓");
+    
+    Logger.log("✅ Fichier créé avec succès!");
     return {
       id: file.getId(),
       url: file.getUrl()
     };
   } catch (error) {
-    Logger.log("Erreur Drive: " + error);
+    Logger.log("❌ Erreur createFileInDrive:");
+    Logger.log("  " + error.toString());
+    Logger.log("  Stack: " + error.stack);
     return null;
   }
 }
