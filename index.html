@@ -1,590 +1,156 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LARA v2 - Gestion Documentaire</title>
+  <title>LARA v2</title>
   <style>
-    :root {
-      --navy: #0d3a66;
-      --blue: #185fa5;
-      --green: #2e7d46;
-      --red: #b3352c;
-      --gray: #999;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f9fafb;
-      color: #1c2b48;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    header {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
-      color: white;
-      padding: 24px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header h1 {
-      font-size: 28px;
-      font-weight: 700;
-    }
-
-    header p {
-      font-size: 13px;
-      opacity: 0.9;
-    }
-
-    .header-btn {
-      background: white;
-      color: var(--blue);
-      border: none;
-      border-radius: 24px;
-      padding: 10px 18px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .header-btn:hover {
-      background: #f0f4f8;
-    }
-
-    .section {
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-
-    .section-header {
-      background: var(--navy);
-      color: white;
-      padding: 12px 16px;
-      font-weight: 600;
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    .section-content {
-      padding: 16px;
-    }
-
-    .doc-item {
-      background: #f9fafb;
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      padding: 12px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .doc-info {
-      flex: 1;
-    }
-
-    .doc-name {
-      font-weight: 600;
-      color: var(--navy);
-      margin-bottom: 4px;
-    }
-
-    .doc-meta {
-      font-size: 12px;
-      color: var(--gray);
-    }
-
-    .doc-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn {
-      background: var(--blue);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 12px;
-      font-size: 12px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn:hover {
-      background: var(--navy);
-    }
-
-    .btn-danger {
-      background: var(--red);
-    }
-
-    .btn-danger:hover {
-      background: #8d251e;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 10px;
-      padding: 24px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-header {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: var(--gray);
-    }
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-      font-size: 13px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
-      font-size: 13px;
-      font-family: inherit;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .form-actions button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .btn-submit {
-      background: var(--green);
-      color: white;
-    }
-
-    .btn-submit:hover {
-      background: #1f5c33;
-    }
-
-    .btn-cancel {
-      background: #e0e0e0;
-      color: var(--navy);
-    }
-
-    .btn-cancel:hover {
-      background: #d0d0d0;
-    }
-
-    .message {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: white;
-      border-radius: 8px;
-      padding: 16px 24px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 2000;
-      animation: slideIn 0.3s ease;
-    }
-
-    .message.success {
-      border-left: 4px solid var(--green);
-    }
-
-    .message.error {
-      border-left: 4px solid var(--red);
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .empty {
-      text-align: center;
-      padding: 32px 16px;
-      color: var(--gray);
-      font-size: 13px;
-    }
-
-    .loader {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      border: 2px solid var(--gray);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial; background: #f5f5f5; color: #333; }
+    .container { max-width: 900px; margin: 20px auto; padding: 20px; }
+    header { background: #0d3a66; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 24px; }
+    header p { font-size: 13px; opacity: 0.9; }
+    .btn { background: #185fa5; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn:hover { background: #0d3a66; }
+    .section { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; }
+    .section-title { background: #0d3a66; color: white; padding: 12px; font-weight: bold; }
+    .section-content { padding: 15px; }
+    .doc { background: #f9f9f9; border: 1px solid #eee; padding: 12px; margin-bottom: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .doc-info { flex: 1; }
+    .doc-name { font-weight: bold; }
+    .doc-meta { font-size: 12px; color: #666; }
+    .doc-btn { background: #2e7d46; padding: 6px 12px; margin-left: 8px; font-size: 12px; color: white; text-decoration: none; border-radius: 4px; }
+    .empty { text-align: center; color: #999; padding: 20px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000; }
+    .modal.active { display: flex; }
+    .modal-box { background: white; padding: 30px; border-radius: 8px; width: 90%; max-width: 400px; }
+    .modal-box h2 { margin-bottom: 15px; }
+    .modal-box input, .modal-box select, .modal-box textarea { width: 100%; padding: 8px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; }
+    .modal-box button { width: 100%; padding: 10px; margin: 8px 0; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-submit { background: #2e7d46; color: white; }
+    .btn-cancel { background: #999; color: white; }
+    .msg { position: fixed; top: 20px; right: 20px; padding: 15px 20px; border-radius: 6px; color: white; z-index: 2000; animation: slide 0.3s; }
+    .msg.ok { background: #2e7d46; }
+    .msg.err { background: #b3352c; }
+    @keyframes slide { from { transform: translateX(400px); } to { transform: translateX(0); } }
   </style>
 </head>
 <body>
 
 <div class="container">
   <header>
-    <div>
-      <h1>📋 LARA</h1>
-      <p>Gestion Documentaire de Chantier</p>
-    </div>
-    <button class="header-btn" onclick="openAddModal()">+ Ajouter un Document</button>
+    <div><h1>📋 LARA</h1><p>Gestion Documentaire de Chantier</p></div>
+    <button class="btn" onclick="openAdd()">+ Ajouter</button>
   </header>
 
-  <!-- PHOTOS -->
   <div class="section">
-    <div class="section-header">📸 Photos du Chantier</div>
-    <div class="section-content" id="photosSection">
-      <div class="empty">Aucune photo</div>
-    </div>
+    <div class="section-title">📸 Photos</div>
+    <div class="section-content" id="photos"><div class="empty">Aucune photo</div></div>
   </div>
 
-  <!-- PLANS -->
   <div class="section">
-    <div class="section-header">📐 Plans Techniques</div>
-    <div class="section-content" id="plansSection">
-      <div class="empty">Aucun plan</div>
-    </div>
+    <div class="section-title">📐 Plans</div>
+    <div class="section-content" id="plans"><div class="empty">Aucun plan</div></div>
   </div>
 
-  <!-- DOCUMENTS -->
   <div class="section">
-    <div class="section-header">✅ Documents Réception</div>
-    <div class="section-content" id="docsSection">
-      <div class="empty">Aucun document</div>
-    </div>
+    <div class="section-title">✅ Documents</div>
+    <div class="section-content" id="docs"><div class="empty">Aucun document</div></div>
   </div>
 </div>
 
-<!-- MODAL AJOUTER -->
-<div class="modal" id="addModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      + Ajouter un Document
-      <button class="close-btn" onclick="closeAddModal()">✕</button>
-    </div>
-
-    <form onsubmit="handleUpload(event)">
-      <div class="form-group">
-        <label>Catégorie *</label>
-        <select id="category" required>
-          <option value="">-- Sélectionner --</option>
-          <option value="photo">📸 Photos</option>
-          <option value="plan">📐 Plans</option>
-          <option value="doc">✅ Documents</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Date *</label>
-        <input type="date" id="date" required>
-      </div>
-
-      <div class="form-group">
-        <label>Fichier *</label>
-        <input type="file" id="file" required>
-      </div>
-
-      <div class="form-group">
-        <label>Description</label>
-        <textarea id="description" placeholder="Notes sur ce document..."></textarea>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn-cancel" onclick="closeAddModal()">Annuler</button>
-        <button type="submit" class="btn-submit">Ajouter</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL SUPPRIMER -->
-<div class="modal" id="deleteModal">
-  <div class="modal-content">
-    <div class="modal-header">Supprimer ?</div>
-    <p>Êtes-vous sûr de vouloir supprimer ce document ?</p>
-    <div class="form-actions">
-      <button class="btn-cancel" onclick="closeDeleteModal()">Non, garder</button>
-      <button class="btn-danger" onclick="confirmDelete()" style="flex: 1;">Oui, supprimer</button>
-    </div>
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h2>+ Ajouter un Document</h2>
+    <select id="cat" required>
+      <option value="">-- Catégorie --</option>
+      <option value="📸 Photos">📸 Photos</option>
+      <option value="📐 Plans">📐 Plans</option>
+      <option value="✅ Documents">✅ Documents</option>
+    </select>
+    <input type="date" id="date" required>
+    <input type="file" id="file" required>
+    <input type="text" id="desc" placeholder="Description (optionnel)">
+    <button class="btn-submit" onclick="upload()">Ajouter</button>
+    <button class="btn-cancel" onclick="closeAdd()">Annuler</button>
   </div>
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxsda_fhVSpXZuOkSHGRGVOeHfOalkWPil22nsT_TMcaBQK-cQeX2Pn8O1g5oBRPqIV/exec";
+const API = "https://script.google.com/macros/s/AKfycbxsda_fhVSpXZuOkSHGRGVOeHfOalkWPil22nsT_TMcaBQK-cQeX2Pn8O1g5oBRPqIV/exec";
+let docs = { "📸 Photos": [], "📐 Plans": [], "✅ Documents": [] };
 
-let documents = { photo: [], plan: [], doc: [] };
-let deleteTarget = null;
-
-// ============================================
-// INITIALISATION
-// ============================================
-
-function setTodayDate() {
-  document.getElementById('date').valueAsDate = new Date();
+function openAdd() { document.getElementById("modal").classList.add("active"); }
+function closeAdd() { document.getElementById("modal").classList.remove("active"); }
+function msg(text, ok) {
+  let m = document.createElement("div");
+  m.className = "msg " + (ok ? "ok" : "err");
+  m.textContent = text;
+  document.body.appendChild(m);
+  setTimeout(() => m.remove(), 3000);
 }
 
-function init() {
-  setTodayDate();
-  loadDocuments();
-}
-
-window.addEventListener('DOMContentLoaded', init);
-
-// ============================================
-// CHARGER LES DOCUMENTS
-// ============================================
-
-async function loadDocuments() {
+async function load() {
   try {
-    const response = await fetch(WEB_APP_URL, { method: 'GET' });
-    const result = await response.json();
-
-    if (result.success && result.data) {
-      documents = { photo: [], plan: [], doc: [] };
-
-      result.data.forEach(doc => {
-        let cat = 'doc';
-        if (doc.cat.includes('📸')) cat = 'photo';
-        else if (doc.cat.includes('📐')) cat = 'plan';
-
-        documents[cat].push({
-          id: doc.id,
-          name: doc.name,
-          date: doc.date,
-          desc: doc.desc,
-          url: doc.url
-        });
-      });
-
-      localStorage.setItem('lara_docs', JSON.stringify(documents));
+    let r = await fetch(API);
+    let j = await r.json();
+    if (j.ok && j.data) {
+      docs = { "📸 Photos": [], "📐 Plans": [], "✅ Documents": [] };
+      j.data.forEach(d => { if (docs[d.cat]) docs[d.cat].push(d); });
       render();
     }
-  } catch (error) {
-    console.error('Erreur loadDocuments:', error);
-    const saved = localStorage.getItem('lara_docs');
-    if (saved) {
-      documents = JSON.parse(saved);
-      render();
-    }
-  }
+  } catch (e) { console.error(e); }
 }
 
-// ============================================
-// UPLOAD
-// ============================================
-
-async function handleUpload(event) {
-  event.preventDefault();
-
-  const category = document.getElementById('category').value;
-  const date = document.getElementById('date').value;
-  const file = document.getElementById('file').files[0];
-  const description = document.getElementById('description').value;
-
-  if (!file) {
-    showMessage('Sélectionne un fichier', false);
-    return;
-  }
-
-  const reader = new FileReader();
+async function upload() {
+  let cat = document.getElementById("cat").value;
+  let date = document.getElementById("date").value;
+  let file = document.getElementById("file").files[0];
+  let desc = document.getElementById("desc").value;
+  
+  if (!cat || !date || !file) { msg("Remplissez tous les champs", false); return; }
+  
+  let reader = new FileReader();
   reader.onload = async (e) => {
-    const fileData = e.target.result.split(',')[1];
-
+    let data = e.target.result.split(",")[1];
     try {
-      const response = await fetch(WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'upload',
-          category: category,
-          fileName: file.name,
-          date: date,
-          description: description,
-          fileData: fileData
-        })
+      let r = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ cat, name: file.name, date, desc, file: data })
       });
-
-      const result = await response.json();
-
-      if (result.success) {
-        showMessage('✅ Document ajouté !', true);
-        closeAddModal();
-        setTimeout(() => loadDocuments(), 500);
+      let j = await r.json();
+      if (j.ok) {
+        msg("✅ Document ajouté", true);
+        closeAdd();
+        setTimeout(load, 500);
       } else {
-        showMessage('❌ ' + result.message, false);
+        msg("❌ " + j.msg, false);
       }
-    } catch (error) {
-      console.error('Erreur upload:', error);
-      showMessage('❌ Erreur upload', false);
+    } catch (e) {
+      msg("❌ Erreur: " + e, false);
     }
   };
-
   reader.readAsDataURL(file);
 }
 
-// ============================================
-// SUPPRIMER
-// ============================================
-
-function openDeleteModal(cat, id) {
-  deleteTarget = { cat, id };
-  document.getElementById('deleteModal').classList.add('active');
-}
-
-function closeDeleteModal() {
-  document.getElementById('deleteModal').classList.remove('active');
-  deleteTarget = null;
-}
-
-function confirmDelete() {
-  if (!deleteTarget) return;
-
-  documents[deleteTarget.cat] = documents[deleteTarget.cat].filter(
-    d => d.id !== deleteTarget.id
-  );
-
-  localStorage.setItem('lara_docs', JSON.stringify(documents));
-  render();
-  closeDeleteModal();
-  showMessage('✅ Document supprimé', true);
-}
-
-// ============================================
-// INTERFACE
-// ============================================
-
-function openAddModal() {
-  document.getElementById('addModal').classList.add('active');
-}
-
-function closeAddModal() {
-  document.getElementById('addModal').classList.remove('active');
-  document.querySelector('form').reset();
-  setTodayDate();
-}
-
-function showMessage(text, success) {
-  const msg = document.createElement('div');
-  msg.className = 'message ' + (success ? 'success' : 'error');
-  msg.textContent = text;
-  document.body.appendChild(msg);
-
-  setTimeout(() => msg.remove(), 3000);
-}
-
 function render() {
-  renderSection('photo', 'photosSection');
-  renderSection('plan', 'plansSection');
-  renderSection('doc', 'docsSection');
+  ["📸 Photos", "📐 Plans", "✅ Documents"].forEach(cat => {
+    let html = "";
+    if (docs[cat].length === 0) {
+      html = '<div class="empty">Aucun document</div>';
+    } else {
+      docs[cat].forEach(d => {
+        html += `<div class="doc"><div class="doc-info"><div class="doc-name">${d.name}</div><div class="doc-meta">${d.date || ""} ${d.desc || ""}</div></div><a href="${d.url}" target="_blank" class="btn doc-btn">👁️ Voir</a></div>`;
+      });
+    }
+    document.getElementById(cat === "📸 Photos" ? "photos" : cat === "📐 Plans" ? "plans" : "docs").innerHTML = html;
+  });
 }
 
-function renderSection(cat, elementId) {
-  const container = document.getElementById(elementId);
-  const docs = documents[cat] || [];
-
-  if (docs.length === 0) {
-    container.innerHTML = '<div class="empty">Aucun document</div>';
-    return;
-  }
-
-  container.innerHTML = docs.map(doc => `
-    <div class="doc-item">
-      <div class="doc-info">
-        <div class="doc-name">${doc.name}</div>
-        <div class="doc-meta">
-          ${doc.date || ''} ${doc.desc ? '• ' + doc.desc : ''}
-        </div>
-      </div>
-      <div class="doc-actions">
-        <a href="${doc.url}" target="_blank" class="btn">👁️ Voir</a>
-        <button class="btn btn-danger" onclick="openDeleteModal('${cat}', '${doc.id}')">🗑️</button>
-      </div>
-    </div>
-  `).join('');
-}
+document.getElementById("date").valueAsDate = new Date();
+load();
 </script>
 
 </body>
